@@ -6,7 +6,6 @@
     android:background="@color/calc_layout_bg"
     android:padding="16dp">
 
-
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="match_parent"
@@ -18,7 +17,6 @@
         android:gravity="center"
         android:layout_marginBottom="8dp" />
 
-
     <TextView
         android:id="@+id/tvExpression"
         android:layout_width="match_parent"
@@ -28,7 +26,6 @@
         android:textColor="@color/white"
         android:gravity="end"
         android:layout_marginBottom="4dp" />
-
 
     <TextView
         android:id="@+id/tvDisplay"
@@ -46,35 +43,130 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:rowCount="5"
+        android:rowCount="7"
         android:columnCount="4"
         android:layout_marginTop="8dp">
 
-
-        <Button android:text="AC" style="@style/CalcButtonSmallText"/>
-        <Button android:text="+/−" style="@style/CalcButtonSmallText"/>
-        <Button android:text="%" style="@style/CalcButtonSmallText"/>
-        <Button android:text="÷" style="@style/CalcButtonOrange"/>
-
-        <Button android:text="7" style="@style/CalcButtonDark"/>
-        <Button android:text="8" style="@style/CalcButtonDark"/>
-        <Button android:text="9" style="@style/CalcButtonDark"/>
-        <Button android:text="×" style="@style/CalcButtonOrange"/>
-
-        <Button android:text="4" style="@style/CalcButtonDark"/>
-        <Button android:text="5" style="@style/CalcButtonDark"/>
-        <Button android:text="6" style="@style/CalcButtonDark"/>
-        <Button android:text="−" style="@style/CalcButtonOrange"/>
-
-        <Button android:text="1" style="@style/CalcButtonDark"/>
-        <Button android:text="2" style="@style/CalcButtonDark"/>
-        <Button android:text="3" style="@style/CalcButtonDark"/>
-        <Button android:text="+" style="@style/CalcButtonOrange"/>
-
-        <Button android:text="0" style="@style/CalcButtonDark" android:layout_columnSpan="2"/>
-        <Button android:text="," style="@style/CalcButtonDark"/>
+        <!-- Строка 1 -->
         <Button
-            android:id="@+id/btnEquals"
+            android:id="@+id/btn_memory_clear"
+            android:text="MC"
+            style="@style/CalcButtonSmallText" />
+        <Button
+            android:id="@+id/btn_memory_recall"
+            android:text="MR"
+            style="@style/CalcButtonSmallText" />
+        <Button
+            android:id="@+id/btn_memory_add"
+            android:text="M+"
+            style="@style/CalcButtonSmallText" />
+        <Button
+            android:id="@+id/btn_memory_subtract"
+            android:text="M-"
+            style="@style/CalcButtonSmallText" />
+
+        <!-- Строка 2-->
+        <Button
+            android:id="@+id/btn_backspace"
+            android:text="⌫"
+            style="@style/CalcButtonSmallText" />
+        <Button
+            android:id="@+id/btn_open_parenthesis"
+            android:text="("
+            style="@style/CalcButtonSmallText" />
+        <Button
+            android:id="@+id/btn_close_parenthesis"
+            android:text=")"
+            style="@style/CalcButtonSmallText" />
+        <Button
+            android:id="@+id/btn_sqrt"
+            android:text="√"
+            style="@style/CalcButtonSmallText" />
+
+        <!-- Строка 3: -->
+        <Button
+            android:id="@+id/btn_ac"
+            android:text="AC"
+            style="@style/CalcButtonSmallText" />
+        <Button
+            android:id="@+id/btn_sign"
+            android:text="+/−"
+            style="@style/CalcButtonSmallText" />
+        <Button
+            android:id="@+id/btn_percent"
+            android:text="%"
+            style="@style/CalcButtonSmallText" />
+        <Button
+            android:id="@+id/btn_divide"
+            android:text="÷"
+            style="@style/CalcButtonOrange" />
+
+        <!-- Строка 4: -->
+        <Button
+            android:id="@+id/btn_7"
+            android:text="7"
+            style="@style/CalcButtonDark" />
+        <Button
+            android:id="@+id/btn_8"
+            android:text="8"
+            style="@style/CalcButtonDark" />
+        <Button
+            android:id="@+id/btn_9"
+            android:text="9"
+            style="@style/CalcButtonDark" />
+        <Button
+            android:id="@+id/btn_multiply"
+            android:text="×"
+            style="@style/CalcButtonOrange" />
+
+
+        <Button
+            android:id="@+id/btn_4"
+            android:text="4"
+            style="@style/CalcButtonDark" />
+        <Button
+            android:id="@+id/btn_5"
+            android:text="5"
+            style="@style/CalcButtonDark" />
+        <Button
+            android:id="@+id/btn_6"
+            android:text="6"
+            style="@style/CalcButtonDark" />
+        <Button
+            android:id="@+id/btn_subtract"
+            android:text="−"
+            style="@style/CalcButtonOrange" />
+
+        <!-- Строка 6-->
+        <Button
+            android:id="@+id/btn_1"
+            android:text="1"
+            style="@style/CalcButtonDark" />
+        <Button
+            android:id="@+id/btn_2"
+            android:text="2"
+            style="@style/CalcButtonDark" />
+        <Button
+            android:id="@+id/btn_3"
+            android:text="3"
+            style="@style/CalcButtonDark" />
+        <Button
+            android:id="@+id/btn_add"
+            android:text="+"
+            style="@style/CalcButtonOrange" />
+
+        <!-- Строка 7 -->
+        <Button
+            android:id="@+id/btn_0"
+            android:text="0"
+            style="@style/CalcButtonDark"
+            android:layout_columnSpan="2" />
+        <Button
+            android:id="@+id/btn_dot"
+            android:text=","
+            style="@style/CalcButtonDark" />
+        <Button
+            android:id="@+id/btn_equals"
             android:text="@string/btn_equals"
             style="@style/CalcButtonEqual" />
     </GridLayout>
