@@ -3,6 +3,7 @@ package itstep.learning.androidrv211;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +18,12 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.main_btn_calc).setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, CalcActivity.class);
+            startActivity(intent);
+        });
+
+        Button btnCurrency = findViewById(R.id.main_btn_currency);
+        btnCurrency.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, CurrencyActivity.class);
             startActivity(intent);
         });
     }

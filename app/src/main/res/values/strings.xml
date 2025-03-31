@@ -24,4 +24,6 @@
     <string name="btn_sign">+/−</string>
     <string name="btn_percent">%</string>
     <string name="btn_dot">,</string>
+    <string name="currency_title">Курси валют НБУ</string>
+    <string name="currency_loading">Завантаження...</string>
 </resources>
