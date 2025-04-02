@@ -3,46 +3,59 @@ package itstep.learning.androidrv211;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsCompat.Type;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import itstep.learning.orm.CurrencyRateNbu;
+
 public class CurrencyActivity extends AppCompatActivity {
     private static final String nbuRatesUrl = "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json";
-    private TextView tvContainer;
+
+    private RecyclerView recyclerView;
+    private CurrencyAdapter currencyAdapter;
     private ExecutorService pool;
+    private TextView tvDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_currency);
 
+        // Настройка отступов под системные панели
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        tvContainer = findViewById(R.id.text_rates);
+        // Инициализация Views
+        tvDate = findViewById(R.id.tvDate);
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        currencyAdapter = new CurrencyAdapter(new ArrayList<>());
+        recyclerView.setAdapter(currencyAdapter);
+
         pool = Executors.newFixedThreadPool(3);
         pool.submit(this::loadRates);
     }
@@ -50,43 +63,52 @@ public class CurrencyActivity extends AppCompatActivity {
     private void loadRates() {
         try {
             URL url = new URL(nbuRatesUrl);
-            InputStream urlStream = url.openStream();
-            ByteArrayOutputStream byteBuilder = new ByteArrayOutputStream();
-            byte[] buffer = new byte[8192];
-            int len;
 
-            while ((len = urlStream.read(buffer)) > 0) {
-                byteBuilder.write(buffer, 0, len);
+            try (InputStream urlStream = url.openStream();
+                 ByteArrayOutputStream byteBuilder = new ByteArrayOutputStream()) {
+
+                byte[] buffer = new byte[8192];
+                int len;
+                while ((len = urlStream.read(buffer)) != -1) {
+                    byteBuilder.write(buffer, 0, len);
+                }
+
+                String json = byteBuilder.toString(StandardCharsets.UTF_8.name());
+
+                try {
+                    JSONArray jsonArray = new JSONArray(json);
+                    List<CurrencyRateNbu> rates = new ArrayList<>();
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject obj = jsonArray.getJSONObject(i);
+                        CurrencyRateNbu rate = CurrencyRateNbu.fromJsonObject(obj);
+                        rates.add(rate);
+                    }
+
+                    // Обновление UI
+                    runOnUiThread(() -> {
+                        currencyAdapter.updateData(rates);
+
+                        if (!rates.isEmpty()) {
+                            String date = rates.get(0).getExchangedate();
+                            tvDate.setText("Офіційний курс НБУ на " + date);
+                        }
+                    });
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    runOnUiThread(() ->
+                            Toast.makeText(CurrencyActivity.this, "Ошибка парсинга: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                    );
+                }
             }
-
-            String json = byteBuilder.toString(StandardCharsets.UTF_8.name());
-            urlStream.close();
-
-            Gson gson = new Gson();
-            TypeToken<List<CurrencyRateNbu>> token = new TypeToken<List<CurrencyRateNbu>>() {};
-            List<CurrencyRateNbu> rates = gson.fromJson(json, token.getType());
-
-            // 🔠 Сортировка по алфавиту (по txt)
-            rates.sort(Comparator.comparing(rate -> rate.txt));
-
-            // 🧾 Форматированный вывод
-            StringBuilder sb = new StringBuilder();
-            for (CurrencyRateNbu rate : rates) {
-                sb.append("💱 ")
-                        .append(rate.txt)
-                        .append(" (").append(rate.cc).append("): ")
-                        .append(String.format("%.2f грн", rate.rate))
-                        .append(" 📅 ").append(rate.exchangedate)
-                        .append("\n\n");
-            }
-
-            runOnUiThread(() -> tvContainer.setText(sb.toString()));
-
-        } catch (MalformedURLException ex) {
-            Log.d("loadRates", "MalformedURLException " + ex.getMessage());
-        } catch (IOException ex) {
-            Log.d("loadRates", "IOException " + ex.getMessage());
-            runOnUiThread(() -> tvContainer.setText("Помилка з'єднання: " + ex.getMessage()));
+        } catch (MalformedURLException e) {
+            Log.d("loadRates", "MalformedURLException " + e.getMessage());
+        } catch (IOException e) {
+            Log.d("loadRates", "IOException " + e.getMessage());
+            runOnUiThread(() ->
+                    Toast.makeText(CurrencyActivity.this, "Помилка з'єднання: " + e.getMessage(), Toast.LENGTH_LONG).show()
+            );
         }
     }
 
