@@ -2,7 +2,7 @@
     <!-- MainActivity -->
     <string name="title_main">Знайомство з Android</string>
     <string name="main_btn_calc">Калькулятор</string>
-
+    <string name="intro_icon_desc">Знайомство з додатком</string>
     <!-- CalcActivity -->
     <string name="app_name">Калькулятор</string>
     <string name="btn_0">0</string>

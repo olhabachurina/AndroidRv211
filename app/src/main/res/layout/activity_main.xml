@@ -23,7 +23,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         android:layout_marginTop="32dp" />
-
+    <ImageView
+        android:id="@+id/intro_icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/baseline_android_24"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/intro_icon_desc" />
     <!-- Кнопка калькулятора -->
     <Button
         android:id="@+id/main_btn_calc"
