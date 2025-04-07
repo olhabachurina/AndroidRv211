@@ -21,7 +21,8 @@
         android:toDegrees="20"
         android:pivotX="50%"
         android:pivotY="0%"
-        android:duration="100"
-        android:repeatCount="3"
-        android:repeatMode="reverse"/>
+        android:duration="300"
+        android:repeatCount="1"
+        android:repeatMode="reverse"
+        android:interpolator="@android:anim/accelerate_decelerate_interpolator"/>
 </set>
