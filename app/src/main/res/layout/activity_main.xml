@@ -21,46 +21,86 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         android:layout_marginTop="32dp" />
+
+    <!-- Иконка -->
     <ImageView
         android:id="@+id/intro_icon"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:src="@drawable/baseline_android_24"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/intro_icon_desc"
         app:layout_constraintTop_toBottomOf="@id/title"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:contentDescription="@string/intro_icon_desc" />
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <!-- Кнопка калькулятора -->
     <Button
         android:id="@+id/main_btn_calc"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="92dp"
+        android:layout_marginEnd="92dp"
+        android:layout_marginTop="16dp"
         android:text="@string/main_btn_calc"
         android:drawableLeft="@drawable/ic_calculate_24"
         android:drawablePadding="8dp"
         android:background="@drawable/bg_btn_equal"
         android:textColor="@android:color/white"
-        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintTop_toBottomOf="@id/intro_icon"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.3"
-        app:layout_constraintHorizontal_bias="0.5" />
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Кнопка курсов валют -->
     <Button
         android:id="@+id/main_btn_currency"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="  Курси валют"
+        android:layout_marginStart="92dp"
+        android:layout_marginEnd="92dp"
+        android:layout_marginTop="16dp"
+        android:text="Курси валют"
         android:drawableLeft="@drawable/transfer_12560162"
         android:drawablePadding="8dp"
         android:background="@drawable/bg_btn_equal"
         android:textColor="@android:color/white"
         app:layout_constraintTop_toBottomOf="@id/main_btn_calc"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Кнопка ЄВсьо -->
+    <Button
+        android:id="@+id/main_btn_final"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="92dp"
+        android:layout_marginEnd="92dp"
         android:layout_marginTop="16dp"
-        app:layout_constraintHorizontal_bias="0.5" />
+        android:text="ЄВсьо"
+        android:textSize="16sp"
+        android:drawableLeft="@drawable/logo"
+        android:drawablePadding="8dp"
+        android:background="@drawable/bg_btn_equal"
+        android:textColor="@android:color/white"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        app:layout_constraintTop_toBottomOf="@id/main_btn_currency"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Контейнер для программного добавления кнопки -->
+    <LinearLayout
+        android:id="@+id/main_ll_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="92dp"
+        android:layout_marginEnd="92dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/main_btn_final"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
