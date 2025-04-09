@@ -20,5 +20,6 @@
 
 
     <!-- endregion -->
-
+    <color name="my_message_bg">#D0F0C0</color>
+    <color name="other_message_bg">#F1F1F1</color>
 </resources>

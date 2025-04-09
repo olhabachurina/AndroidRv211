@@ -23,6 +23,6 @@
         android:pivotY="0%"
         android:duration="300"
         android:repeatCount="1"
-        android:repeatMode="reverse"
-        android:interpolator="@android:anim/accelerate_decelerate_interpolator"/>
+        android:repeatMode="reverse"/>
+
 </set>

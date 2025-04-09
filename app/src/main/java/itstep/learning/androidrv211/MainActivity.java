@@ -54,6 +54,32 @@ public class MainActivity extends AppCompatActivity {
         styleAnimationButton(animButton);
         LinearLayout mainLlContainer = findViewById(R.id.main_ll_container);
         mainLlContainer.addView(animButton);
+// Кнопка "Чат"
+        Button chatButton = new Button(this);
+        chatButton.setText("Чат");
+        chatButton.setAllCaps(false);
+        chatButton.setBackgroundResource(R.drawable.bg_btn_purple);
+        chatButton.setTextColor(ContextCompat.getColor(this, android.R.color.white));
+        chatButton.setTextSize(16);
+        chatButton.setTypeface(chatButton.getTypeface(), Typeface.BOLD);
+
+// Отступы и параметры
+        LinearLayout.LayoutParams chatParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        chatParams.topMargin = (int) (16 * getResources().getDisplayMetrics().density);
+        chatButton.setLayoutParams(chatParams);
+
+// Обработчик перехода
+        chatButton.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, ChatActivity.class);
+            startActivity(intent);
+        });
+
+// Добавление в контейнер
+        mainLlContainer.addView(chatButton);
+
     }
 
     private void styleAnimationButton(Button animButton) {
