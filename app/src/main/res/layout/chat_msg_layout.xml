@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/chat_msg_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingHorizontal="8dp"
+    android:paddingVertical="4dp"
+    android:gravity="start">
+
+    <!-- Аватар -->
+    <ImageView
+        android:id="@+id/chat_avatar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="8dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/baseline_android_24"
+        android:background="@drawable/bg_btn_purple"
+        android:padding="4dp" />
+
+    <!-- Пузырь-сообщение -->
+    <LinearLayout
+        android:id="@+id/chat_bubble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/item_background"
+        android:padding="10dp"
+        android:layout_margin="4dp"
+        android:elevation="2dp">
+
+        <!-- Автор -->
+        <TextView
+            android:id="@+id/chat_msg_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textColor="#222"
+            android:textSize="15sp"
+            android:textAllCaps="true"
+            android:letterSpacing="0.08"
+            android:text="AUTHOR" />
+
+        <!-- Текст сообщения -->
+        <TextView
+            android:id="@+id/chat_msg_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#333"
+            android:textSize="15sp"
+            android:lineSpacingExtra="2dp"
+            android:layout_marginTop="2dp"
+            android:text="Привіт! Як справи?" />
+
+        <!-- Время -->
+        <TextView
+            android:id="@+id/chat_msg_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#999"
+            android:textSize="12sp"
+            android:layout_marginTop="4dp"
+            android:text=" 11.04 19:55" />
+    </LinearLayout>
+</LinearLayout>

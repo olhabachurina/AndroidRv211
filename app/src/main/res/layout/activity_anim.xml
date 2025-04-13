@@ -155,7 +155,7 @@
                     android:padding="16dp"
                     android:src="@drawable/ic_bell_fillen"
                     android:scaleType="centerInside"
-                    android:contentDescription="@string/app_name" />
+                    android:contentDescription="Калькулятор" />
 
                 <TextView
                     android:layout_width="wrap_content"

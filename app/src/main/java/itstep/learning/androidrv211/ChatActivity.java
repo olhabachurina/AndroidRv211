@@ -1,5 +1,6 @@
 package itstep.learning.androidrv211;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -8,8 +9,11 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -20,10 +24,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 
+import itstep.chat.ChatMessageAdapter;
 import itstep.learning.orm.ChatMessage;
 
 import android.os.Bundle;
@@ -37,6 +44,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,162 +59,201 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ChatActivity extends AppCompatActivity {
+
     private static final String chatUrl = "https://chat.momentfor.fun/";
-    private ExecutorService pool;
+    private final List<ChatMessage> messages = new ArrayList<>();
+    private String currentUser = "";
 
     private TextView chatStatus;
-    private LinearLayout messagesContainer;
-    private ScrollView scrollView;
-    private EditText etAuthor;
-    private EditText etMessage;
+    private RecyclerView recyclerView;
+    private EditText etAuthor, etMessage;
     private MediaPlayer newMessageSound;
+    private ImageView bellIcon;
+    private Animation bellAnimation;
+
+    private ChatMessageAdapter adapter;
+    private ExecutorService pool;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
+        initViews();
+        initRecyclerView();
+        initSendButton();
+
+        fetchMessagesFromServer();
+    }
+
+    private void initViews() {
         chatStatus = findViewById(R.id.chat_status);
-        messagesContainer = findViewById(R.id.messages_container);
-        scrollView = findViewById(R.id.scrollView);
+        recyclerView = findViewById(R.id.recycler_messages);
         etAuthor = findViewById(R.id.et_author);
         etMessage = findViewById(R.id.et_message);
-        ImageButton btnSend = findViewById(R.id.btn_send);
-        ImageButton btnExit = findViewById(R.id.btn_exit);
-
+        bellIcon = findViewById(R.id.bell_icon);
+        bellAnimation = AnimationUtils.loadAnimation(this, R.anim.anim_bell);
         newMessageSound = MediaPlayer.create(this, R.raw.bell_sound);
+        findViewById(R.id.btn_debug_add).setOnClickListener(v -> generateTestMessages());
+        findViewById(R.id.btn_exit).setOnClickListener(v -> finish());
+    }
 
-        btnExit.setOnClickListener(v -> finish());
+    private void initRecyclerView() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(layoutManager);
 
+        adapter = new ChatMessageAdapter(messages, currentUser);
+        recyclerView.setAdapter(adapter);
+    }
+
+    private void initSendButton() {
+        findViewById(R.id.btn_send).setOnClickListener(v -> {
+            String author = etAuthor.getText().toString().trim();
+            String text = etMessage.getText().toString().trim();
+
+            boolean hasError = false;
+
+            if (author.isEmpty()) {
+                etAuthor.setError("Введіть ваш нік ❌");
+                hasError = true;
+            } else {
+                etAuthor.setError(null); // прибрати попередню помилку
+            }
+
+            if (text.isEmpty()) {
+                etMessage.setError("Напишіть повідомлення ❌");
+                hasError = true;
+            } else {
+                etMessage.setError(null);
+            }
+
+            if (hasError) return; // ❗ Зупинити, якщо є помилка
+
+            // Якщо все введено
+            if (!author.equals(currentUser)) {
+                currentUser = author;
+                adapter = new ChatMessageAdapter(messages, currentUser);
+                recyclerView.setAdapter(adapter);
+            }
+
+            ChatMessage message = new ChatMessage("0", author, text, new Date());
+            adapter.addMessage(message);
+            etMessage.setText("");
+            recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+            playNewMessageSound();
+        });
+    }
+
+    private void playNewMessageSound() {
+        if (newMessageSound != null) {
+            newMessageSound.start();
+            if (bellIcon != null && bellAnimation != null) {
+                bellIcon.startAnimation(bellAnimation);
+            }
+        }
+    }
+    private void generateTestMessages() {
+        String author = etAuthor.getText().toString().trim();
+        if (!author.equals(currentUser)) {
+            currentUser = author;
+            adapter = new ChatMessageAdapter(messages, currentUser);
+            recyclerView.setAdapter(adapter);
+        }
+
+        Calendar calendar = Calendar.getInstance();
+
+        // Сьогодні
+        Date today = calendar.getTime();
+        adapter.addMessage(new ChatMessage("test1", "Андрій", "Сьогоднішнє повідомлення", today));
+
+        // Вчора
+        calendar.add(Calendar.DAY_OF_YEAR, -1);
+        Date yesterday = calendar.getTime();
+        adapter.addMessage(new ChatMessage("test2", "Ірина", "Вчорашнє повідомлення", yesterday));
+
+        // 3 дні тому
+        calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, -3);
+        Date threeDaysAgo = calendar.getTime();
+        adapter.addMessage(new ChatMessage("test3", "Олексій", "3 дні тому", threeDaysAgo));
+
+        // 10 днів тому
+        calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, -10);
+        Date tenDaysAgo = calendar.getTime();
+        adapter.addMessage(new ChatMessage("test4", "Ольга", "Повідомлення 10 днів тому", tenDaysAgo));
+
+        recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+    }
+
+    private void fetchMessagesFromServer() {
         pool = Executors.newFixedThreadPool(3);
         CompletableFuture
                 .supplyAsync(() -> Services.fetchUrl(chatUrl), pool)
                 .thenApply(this::parseChatResponse)
                 .thenAccept(this::processChatResponse);
-
-        btnSend.setOnClickListener(v -> {
-            String author = etAuthor.getText().toString().trim();
-            String text = etMessage.getText().toString().trim();
-            if (!author.isEmpty() && !text.isEmpty()) {
-                ChatMessage msg = new ChatMessage("0", author, text, new Date());
-                addMessageToLayout(msg, true);
-                etMessage.setText("");
-            }
-        });
     }
 
     private List<ChatMessage> parseChatResponse(String body) {
-        List<ChatMessage> messages = new ArrayList<>();
-
+        List<ChatMessage> parsed = new ArrayList<>();
         try {
-            JSONObject jsonObject = new JSONObject(body);
+            JSONObject json = new JSONObject(body);
+            int status = json.optInt("status", 0);
 
-            int status = jsonObject.optInt("status", 0);
             if (status != 1) {
-                String warning = "❌ Сервер повернув статус: " + status;
-                Log.w("ChatActivity", warning);
-
-                runOnUiThread(() -> {
-                    chatStatus.setText(warning);
-                    chatStatus.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-                    chatStatus.setVisibility(View.VISIBLE);
-                    Toast.makeText(ChatActivity.this, warning, Toast.LENGTH_LONG).show();
-                    hideStatusAfterDelay();
-                });
-
-                return messages;
+                showStatus("❌ Сервер повернув статус: " + status, android.R.color.holo_red_dark);
+                return parsed;
             }
 
-            runOnUiThread(() -> {
-                chatStatus.setText("✅ Повідомлення успішно отримано");
-                chatStatus.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
-                chatStatus.setVisibility(View.VISIBLE);
-                Toast.makeText(ChatActivity.this, "✅ Повідомлення отримано", Toast.LENGTH_SHORT).show();
-                hideStatusAfterDelay();
-            });
+            showStatus("✅ Повідомлення успішно отримано", android.R.color.holo_green_dark);
+            JSONArray data = json.getJSONArray("data");
 
-            JSONArray arr = jsonObject.getJSONArray("data");
-            for (int i = 0; i < arr.length(); i++) {
-                JSONObject obj = arr.getJSONObject(i);
-                ChatMessage msg = ChatMessage.fromJsonObject(obj);
-                messages.add(msg);
+            for (int i = 0; i < data.length(); i++) {
+                parsed.add(ChatMessage.fromJsonObject(data.getJSONObject(i)));
             }
-
-        } catch (JSONException e) {
+        } catch (Exception e) {
             Log.e("ChatActivity", "JSON Exception: " + e.getMessage());
+            showStatus("❌ Помилка обробки JSON", android.R.color.holo_red_dark);
+        }
+        return parsed;
+    }
 
-            runOnUiThread(() -> {
-                chatStatus.setText("❌ Помилка обробки JSON");
-                chatStatus.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-                chatStatus.setVisibility(View.VISIBLE);
-                Toast.makeText(ChatActivity.this, "❌ Помилка обробки JSON", Toast.LENGTH_LONG).show();
-                hideStatusAfterDelay();
-            });
+    private void processChatResponse(List<ChatMessage> parsedMessages) {
+        for (ChatMessage msg : parsedMessages) {
+            boolean isNew = messages.stream()
+                    .noneMatch(existing -> existing.getId().equals(msg.getId()));
+            if (isNew) messages.add(msg);
         }
 
-        return messages;
+        messages.sort(Comparator.comparing(ChatMessage::getMoment));
+
+        runOnUiThread(() -> {
+            adapter.notifyDataSetChanged();
+            recyclerView.scrollToPosition(messages.size() - 1);
+        });
+    }
+
+    private void showStatus(String message, int colorRes) {
+        runOnUiThread(() -> {
+            chatStatus.setText(message);
+            chatStatus.setTextColor(getResources().getColor(colorRes));
+            chatStatus.setVisibility(View.VISIBLE);
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+            hideStatusAfterDelay();
+        });
     }
 
     private void hideStatusAfterDelay() {
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            if (chatStatus != null) {
-                chatStatus.setVisibility(View.GONE);
-            }
-        }, 5000); // 5 секунд
-    }
-
-    private void processChatResponse(List<ChatMessage> messages) {
-        runOnUiThread(() -> {
-            for (ChatMessage msg : messages) {
-                addMessageToLayout(msg, false);
-            }
-        });
-    }
-
-    private void addMessageToLayout(ChatMessage msg, boolean playSound) {
-        TextView tv = new TextView(this);
-        tv.setText(msg.toString());
-        tv.setTextSize(16);
-        tv.setTextColor(ContextCompat.getColor(this, android.R.color.black));
-        tv.setPadding(24, 16, 24, 16);
-        tv.setBackgroundResource(R.drawable.chat_message_background);
-
-
-        String currentAuthor = etAuthor.getText().toString().trim();
-        if (msg.getAuthor().equalsIgnoreCase(currentAuthor)) {
-            tv.setBackgroundColor(ContextCompat.getColor(this, R.color.my_message_bg));  // напр. светло-зеленый
-        } else {
-            tv.setBackgroundColor(ContextCompat.getColor(this, R.color.other_message_bg));  // напр. светло-серый
-        }
-
-
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        );
-        params.setMargins(24, 8, 24, 8);
-        tv.setLayoutParams(params);
-
-        messagesContainer.addView(tv);
-
-
-        scrollView.postDelayed(() ->
-                scrollView.fullScroll(View.FOCUS_DOWN), 100);
-
-        // Звук
-        if (playSound && newMessageSound != null) {
-            newMessageSound.start();
-        }
+            if (chatStatus != null) chatStatus.setVisibility(View.GONE);
+        }, 5000);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (newMessageSound != null) {
-            newMessageSound.release();
-        }
-        if (pool != null) {
-            pool.shutdownNow();
-        }
+        if (newMessageSound != null) newMessageSound.release();
+        if (pool != null) pool.shutdownNow();
     }
 }
