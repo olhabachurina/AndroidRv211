@@ -32,4 +32,13 @@
     <string name="btn_dot">,</string>
     <string name="currency_title">Курси валют НБУ</string>
     <string name="currency_loading">Завантаження...</string>
+    <!-- ChatActivity error and status messages -->
+    <string name="error_empty_author">Введіть ваш нік ❌</string>
+    <string name="error_empty_message">Напишіть повідомлення ❌</string>
+    <string name="error_server_status">❌ Сервер повернув статус: %1$d</string>
+    <string name="status_success_loaded">✅ Повідомлення успішно отримано</string>
+    <string name="status_message_sent">✅ Повідомлення успішно відправлено</string>
+    <string name="error_json">❌ Помилка обробки JSON</string>
+    <string name="error_empty_response">❌ Відповідь від сервера порожня</string>
+    <string name="error_network">❌ Повідомлення не відправлено. Спробуйте ще раз.</string>
 </resources>
