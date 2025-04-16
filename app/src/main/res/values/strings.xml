@@ -41,4 +41,5 @@
     <string name="error_json">❌ Помилка обробки JSON</string>
     <string name="error_empty_response">❌ Відповідь від сервера порожня</string>
     <string name="error_network">❌ Повідомлення не відправлено. Спробуйте ще раз.</string>
+    <string name="label_remember_me">Запомни мене</string>
 </resources>

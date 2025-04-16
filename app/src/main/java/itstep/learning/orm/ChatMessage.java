@@ -1,5 +1,7 @@
 package itstep.learning.orm;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
@@ -38,8 +40,10 @@ public class ChatMessage {
 
             String momentStr = jsonObject.getString("moment");
             chatMessage.moment = dateFormat.parse(momentStr);
+
+            Log.d("ChatMessage", "✅ Parsed message: id=" + chatMessage.id + ", author=" + chatMessage.author + ", text=" + chatMessage.text);
         } catch (JSONException | ParseException e) {
-            e.printStackTrace();
+            Log.e("ChatMessage", "❌ Error parsing JSON: " + e.getMessage(), e);
         }
         return chatMessage;
     }
@@ -76,6 +80,9 @@ public class ChatMessage {
     }
 
 
+    public void setText(String text) {//
+        this.text = text;
+    }
 }
 
 /*{

@@ -2,6 +2,7 @@ package itstep.chat;
 
 import android.content.Context;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -31,9 +32,9 @@ public class ChatMessageViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setChatMessage(ChatMessage chatMessage) {
+        Log.d("ChatMessageViewHolder", "Установка сообщения: " + chatMessage.getText());
         tvAuthor.setText(chatMessage.getAuthor());
         tvText.setText(chatMessage.getText());
-
         String smartTime = getSmartTimeText(chatMessage.getMoment());
         tvTime.setText(smartTime);
     }

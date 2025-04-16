@@ -7,7 +7,7 @@
     android:padding="16dp"
     android:background="@color/white">
 
-    <!-- Иконка колокольчика -->
+    <!-- Иконка -->
     <ImageView
         android:id="@+id/bell_icon"
         android:layout_width="48dp"
@@ -28,7 +28,7 @@
         android:text="💬 Теревеньки"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:textColor="@android:color/holo_green_dark"
+        android:textColor="@android:color/holo_blue_dark"
         android:fontFamily="sans-serif-medium"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,33 +50,79 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Подпись перед ником -->
-    <TextView
-        android:id="@+id/nick_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ваш нік у чаті:"
-        android:textSize="16sp"
-        android:textColor="@android:color/darker_gray"
-        android:layout_marginTop="12dp"
-        android:fontFamily="sans-serif"
-        app:layout_constraintTop_toBottomOf="@id/chat_status"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <!-- Поле ввода имени -->
-    <EditText
-        android:id="@+id/et_author"
+    <!-- Автор + чекбокс + кнопка очистки -->
+    <LinearLayout
+        android:id="@+id/author_row"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Наприклад: Boss"
-        android:inputType="textPersonName"
-        android:backgroundTint="@android:color/darker_gray"
-        android:padding="10dp"
-        android:textSize="16sp"
-        android:layout_marginTop="4dp"
-        app:layout_constraintTop_toBottomOf="@id/nick_label"
+        android:orientation="vertical"
+        android:padding="4dp"
+        app:layout_constraintTop_toBottomOf="@id/chat_status"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/nick_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Автор:"
+                android:textSize="16sp"
+                android:textColor="@android:color/darker_gray"
+                android:fontFamily="sans-serif" />
+
+            <EditText
+                android:id="@+id/et_author"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:hint="Ваш нік у чаті"
+                android:inputType="textPersonName"
+                android:backgroundTint="@android:color/darker_gray"
+                android:padding="10dp"
+                android:textSize="16sp" />
+
+            <CheckBox
+                android:id="@+id/cb_remember_me"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Зберегти"
+                android:textColor="@android:color/holo_blue_dark"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_clear_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🧹 Очистити пам’ять"
+            android:textSize="14sp"
+            android:layout_gravity="end"
+            android:layout_marginTop="4dp"
+            android:backgroundTint="@android:color/darker_gray"
+            android:textColor="@android:color/white"/>
+        <Button
+            android:id="@+id/btn_show_db_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🗃️ Історія з БД"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:backgroundTint="@android:color/holo_green_dark"
+            android:textColor="@android:color/white"
+            app:layout_constraintTop_toBottomOf="@id/btn_debug_add"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </LinearLayout>
+
+    <!-- Кнопка тестових повідомлень -->
     <Button
         android:id="@+id/btn_debug_add"
         android:layout_width="wrap_content"
@@ -86,12 +132,11 @@
         android:layout_marginBottom="8dp"
         android:backgroundTint="@android:color/holo_purple"
         android:textColor="@android:color/white"
-        android:visibility="visible"
-        android:enabled="true"
-        app:layout_constraintTop_toBottomOf="@id/et_author"
+        app:layout_constraintTop_toBottomOf="@id/author_row"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-    <!-- RecyclerView для сообщений -->
+
+    <!-- Список повідомлень -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_messages"
         android:layout_width="0dp"
@@ -100,11 +145,12 @@
         android:clipToPadding="false"
         android:padding="4dp"
         android:layout_marginBottom="60dp"
-    app:layout_constraintTop_toBottomOf="@id/btn_debug_add"
-    app:layout_constraintBottom_toTopOf="@id/message_row"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent" />
-    <!-- Нижняя панель с вводом сообщения -->
+        app:layout_constraintTop_toBottomOf="@id/btn_debug_add"
+        app:layout_constraintBottom_toTopOf="@id/message_row"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Нижня панель повідомлення -->
     <LinearLayout
         android:id="@+id/message_row"
         android:layout_width="0dp"
@@ -122,7 +168,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Напишіть повідомлення"
+            android:hint="Введіть повідомлення"
             android:inputType="textMultiLine"
             android:maxLines="3"
             android:minHeight="48dp"
@@ -130,14 +176,16 @@
             android:backgroundTint="@android:color/darker_gray"
             android:textSize="16sp" />
 
-        <ImageButton
+        <Button
             android:id="@+id/btn_send"
-            android:layout_width="48dp"
+            android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:src="@android:drawable/ic_menu_send"
-            android:contentDescription="Надіслати"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            app:tint="@android:color/holo_blue_dark" />
+            android:minWidth="72dp"
+            android:text="Надіслати"
+            android:backgroundTint="@android:color/holo_blue_dark"
+            android:textColor="@android:color/white"
+            android:textAllCaps="false"
+            android:layout_marginStart="8dp" />
 
         <ImageButton
             android:id="@+id/btn_exit"
@@ -148,7 +196,6 @@
             android:layout_marginStart="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             app:tint="@android:color/holo_red_dark" />
-
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
