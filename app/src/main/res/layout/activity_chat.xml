@@ -97,7 +97,13 @@
                 android:textColor="@android:color/holo_blue_dark"
                 android:textSize="14sp" />
         </LinearLayout>
-
+        <Button
+            android:id="@+id/btn_show_notification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Показать уведомление"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center_horizontal" />
         <Button
             android:id="@+id/btn_clear_author"
             android:layout_width="wrap_content"
